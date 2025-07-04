@@ -26,14 +26,12 @@
 
 ```mermaid
 graph TD
-    A[Пользователь] -->|Вопрос + (опц. источник)| B(Контроллер /ask)
-    B -->|source задан| C[Агент RAG (retrieval + generation)]
-    B -->|source не задан| D[Агент выбора источника]
-    D --> C
-    C --> E[Реранкер (опционально)]
-    E --> F[LLM (ответ)]
-    C --> F
-    F --> A
+    user[User] -->|Ask (+optional source)| retriever[Retriever Agent]
+    retriever --> router[Router Agent]
+    router -->|Choose source| sourceSelector[Source Selector]
+    sourceSelector --> contextBuilder[Context Builder]
+    contextBuilder --> llm[LLM]
+    llm --> answer[Answer to User]
 ```
 ---
 
