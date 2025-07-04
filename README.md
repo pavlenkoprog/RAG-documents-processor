@@ -24,14 +24,30 @@
 
 ## Диаграмма взаимодействия ИИ-агентов
 
-```mermaid
-graph TD
-    user[User] -->|Ask (+optional source)| retriever[Retriever Agent]
-    retriever --> router[Router Agent]
-    router -->|Choose source| sourceSelector[Source Selector]
-    sourceSelector --> contextBuilder[Context Builder]
-    contextBuilder --> llm[LLM]
-    llm --> answer[Answer to User]
+```
+User
+ │
+ ▼
+[QuestionAgent]
+   │
+   ├── если указан filename:
+   │       └──► [RetrieverAgent (filtered)]
+   │                            │
+   │                            ▼
+   │                   [RerankerAgent → LLM]
+   │                            ▼
+   │                          Ответ
+   │
+   └── если не указан filename:
+           └──► [SourceSelectionAgent]
+                         │
+                         ▼
+               best_source → [RetrieverAgent (filtered)]
+                                │
+                                ▼
+                       [RerankerAgent → LLM]
+                                ▼
+                              Ответ
 ```
 ---
 
