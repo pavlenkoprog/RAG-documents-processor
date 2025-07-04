@@ -25,29 +25,15 @@
 ## Диаграмма взаимодействия ИИ-агентов
 
 ```mermaid
-User
- │
- ▼
-[QuestionAgent]
-   │
-   ├── если указан filename:
-   │       └──► [RetrieverAgent (filtered)]
-   │                            │
-   │                            ▼
-   │                   [RerankerAgent → LLM]
-   │                            ▼
-   │                          Ответ
-   │
-   └── если не указан filename:
-           └──► [SourceSelectionAgent]
-                         │
-                         ▼
-               best_source → [RetrieverAgent (filtered)]
-                                │
-                                ▼
-                       [RerankerAgent → LLM]
-                                ▼
-                              Ответ
+graph TD
+    A[Пользователь] -->|Вопрос + (опц. источник)| B(Контроллер /ask)
+    B -->|source задан| C[Агент RAG (retrieval + generation)]
+    B -->|source не задан| D[Агент выбора источника]
+    D --> C
+    C --> E[Реранкер (опционально)]
+    E --> F[LLM (ответ)]
+    C --> F
+    F --> A
 ```
 ---
 
